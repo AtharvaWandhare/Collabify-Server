@@ -9,14 +9,15 @@ router.route('/register').post(userController.register);
 router.route('/login').post(userController.login);
 
 // Secure Routes
-router.route('/get-users').get(verifyJWT, userController.getAllUsers);
 router.route('/logout').post(verifyJWT, userController.logout);
-router.route('/get-user').get(verifyJWT, userController.getProfile);
-router.route('/update-user-profile').put(verifyJWT, userController.updateProfile);
-router.route('/delete-user').delete(verifyJWT, userController.deleteUser);
-router.route('/get-user-by-id/:id').get(verifyJWT, userController.getUserById);
-router.route('/change-password').patch(verifyJWT, userController.changePassword);
-router.route('/profile-picture')
+router.route('/users').get(verifyJWT, userController.getAllUsers);
+router.route('/users/:id').get(verifyJWT, userController.getUserById);
+router.route('/me')
+    .get(verifyJWT, userController.getProfile)
+    .delete(verifyJWT, userController.deleteUser);
+router.route('/me/profile').put(verifyJWT, userController.updateProfile);
+router.route('/me/password').patch(verifyJWT, userController.changePassword);
+router.route('/me/profile-picture')
     .patch(verifyJWT, upload.single('profilePicture'), userController.changeProfilePicture)
     .delete(verifyJWT, userController.removeProfilePicture);
 router.route('/refresh-token').post(userController.refreshAuthToken);
