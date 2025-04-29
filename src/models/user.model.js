@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { UserProfile } from './userProfile.model.js';
+import UserNotifications from './userNotifications.model.js';
+import UserSettings from './userSettings.model.js';
 
 const userSchema = new mongoose.Schema(
     {
@@ -53,8 +56,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-userSchema.index({ username: 1, email: 1 }, { unique: true });
-
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
@@ -99,8 +100,7 @@ userSchema.methods.generateAuthToken = function () {
             {
                 _id: this._id,
                 email: this.email,
-                username: this.username,
-                fullName: this.fullName
+                username: this.username
             },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
@@ -125,13 +125,14 @@ userSchema.methods.generateRefreshToken = function () {
 userSchema.pre('findOneAndDelete', async function (next) {
     const userId = this.getQuery()["_id"];
     try {
-        await mongoose.model('UserProfile').findOneAndDelete({ user: userId });
-        await mongoose.model('UserNotifications').findOneAndDelete({ user: userId });
-        await mongoose.model('UserSettings').findOneAndDelete({ user: userId });
+        await UserProfile.findOneAndDelete({ user: userId });
+        await UserNotifications.findOneAndDelete({ user: userId });
+        await UserSettings.findOneAndDelete({ user: userId });
     } catch (error) {
         console.log(error);
         next(error);
     }
+    next();
 })
 
 export const User = mongoose.model('User', userSchema);

@@ -45,17 +45,17 @@ const userNotificationsSchema = new mongoose.Schema({
     ],
 }, { timestamps: true });
 
-userNotificationsSchema.index({ userId: 1 }, { unique: true });
+userNotificationsSchema.index({ user: 1 }, { unique: true });
 
 userNotificationsSchema.pre('save', function (next) {
     this.totalNotifications = this.notifications.length;
     next();
 });
 
-userNotificationsSchema.pre('updateOne', function (next) {
-    this.totalNotifications = this.notifications.length;
-    next();
-});
+// userNotificationsSchema.pre('updateOne', function (next) {
+//     this.totalNotifications = this.notifications.length;
+//     next();
+// });
 
 userNotificationsSchema.methods.emailNotificationsOff = function () {
     this.emailNotifications = false;

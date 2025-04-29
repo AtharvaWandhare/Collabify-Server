@@ -36,7 +36,7 @@ const userProfileSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-userProfileSchema.index({ userId: 1 }, { unique: true });
+userProfileSchema.index({ user: 1 }, { unique: true });
 
 userProfileSchema.methods.toJSON = function () {
     const userProfile = this;
