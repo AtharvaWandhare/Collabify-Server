@@ -9,8 +9,8 @@ import session from 'cookie-session';
 
 const app = express();
 
-const key = fs.readFileSync('../secureKeys/key.pem')
-const cert = fs.readFileSync('../secureKeys/cert.pem')
+const key = fs.readFileSync('./secureKeys/key.pem')
+const cert = fs.readFileSync('./secureKeys/cert.pem')
 
 const server = https.createServer({ key, cert }, app);
 
