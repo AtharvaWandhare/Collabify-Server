@@ -1,20 +1,21 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
-console.log('CLOUDINARY_CLOUD_API:', process.env.CLOUDINARY_API_KEY);
+function configCloudinary() {
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+    });
+}
+
+setTimeout(() => {
+    configCloudinary();
+    console.log('Cloudinary configured successfully');
+    // console.log('CLOUDINARY_CLOUD_API:', process.env.CLOUDINARY_API_KEY);
+}, 1000 * 5);
 
 const uploadOnCloudinary = async (localFilePath) => {
-    // console.log(`Cloudinary config: ${process.env.CLOUDINARY_CLOUD_NAME}, ${process.env.CLOUDINARY_API_KEY}, ${process.env.CLOUDINARY_API_SECRET}, ${localFilePath}`)
-    // cloudinary.config({
-    //     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    //     api_key: process.env.CLOUDINARY_API_KEY,
-    //     api_secret: process.env.CLOUDINARY_API_SECRET
-    // });
     try {
         if (!localFilePath) return null;
         const response = await cloudinary.uploader.upload(localFilePath, {
@@ -31,11 +32,6 @@ const uploadOnCloudinary = async (localFilePath) => {
 }
 
 const deleteFromCloudinary = async (Url) => {
-    // cloudinary.config({
-    //     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    //     api_key: process.env.CLOUDINARY_API_KEY,
-    //     api_secret: process.env.CLOUDINARY_API_SECRET
-    // });
     try {
         console.log(`Deleting file from cloudinary: "${Url}"`)
         if (!Url) return null;
