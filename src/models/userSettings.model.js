@@ -23,8 +23,6 @@ const userSettingsSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-userSettingsSchema.index({ user: 1 }, { unique: true });
-
 userSettingsSchema.methods.toJSON = function () {
     const userSettings = this;
     const userSettingsObject = userSettings.toObject();

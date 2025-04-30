@@ -45,8 +45,6 @@ const userNotificationsSchema = new mongoose.Schema({
     ],
 }, { timestamps: true });
 
-userNotificationsSchema.index({ user: 1 }, { unique: true });
-
 userNotificationsSchema.pre('save', function (next) {
     this.totalNotifications = this.notifications.length;
     next();
