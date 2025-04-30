@@ -56,6 +56,6 @@ app.use('/api/v1/userProfile', userProfileRoutes);
 app.use('/api/v1/userNotifications', userNotifications);
 app.use('/api/v1/userSettings', userSettings);
 app.use('/auth', GoogleAuth);
-app.use('/api/v1/documents', documentRoutes);
+app.use('/api/v1/document', documentRoutes);
 
 export { app, io, server };
