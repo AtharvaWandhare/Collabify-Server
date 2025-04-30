@@ -1,11 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
 const documentSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     title: {
         type: String,
         trim: true,
         required: false,
-        default: '',
+        default: 'Untitled Document',
     },
     content: {
         type: String,

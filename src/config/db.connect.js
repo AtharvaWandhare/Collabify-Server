@@ -3,7 +3,8 @@ import { DB_NAME } from './keys.js';
 
 const connectDB = async () => {
     try {
-        // console.log('Connecting to MongoDB Servers...\nMONGODB_URI:', process.env.MONGODB_URI);
+        // const uri = `${process.env.MONGODB_URI}/${DB_NAME}`;
+        // console.log(`Connecting to MongoDB Servers...\nMONGODB_URI: ${uri}`);
         const conn = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`);
         console.log(`MongoDB Successfully connected: ${conn.connection.host}`);
     } catch (error) {
