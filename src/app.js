@@ -48,6 +48,7 @@ import userProfileRoutes from './routes/userProfile.routes.js';
 import userNotifications from './routes/userNotifications.routes.js';
 import userSettings from './routes/userSettings.routes.js';
 import GoogleAuth from './routes/auth.routes.js';
+import documentRoutes from './routes/document.routes.js';
 
 // Use Routes
 app.use('/api/v1/users', userRoutes);
@@ -55,5 +56,6 @@ app.use('/api/v1/userProfile', userProfileRoutes);
 app.use('/api/v1/userNotifications', userNotifications);
 app.use('/api/v1/userSettings', userSettings);
 app.use('/auth', GoogleAuth);
+app.use('/api/v1/documents', documentRoutes);
 
 export { app, io, server };
