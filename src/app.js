@@ -16,7 +16,7 @@ const server = https.createServer({ key, cert }, app);
 
 const io = new Server(server, {
     cors: {
-        origin: process.env.CORS_ORIGIN,
+        origin: 'http://localhost:3000',
         methods: ['GET', 'POST'],
         credentials: true
     },
@@ -27,7 +27,8 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }))
 app.use(express.json({ limit: '16kb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true
 }));
 
@@ -51,10 +52,10 @@ import GoogleAuth from './routes/auth.routes.js';
 import documentRoutes from './routes/document.routes.js';
 
 // Use Routes
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/userProfile', userProfileRoutes);
-app.use('/api/v1/userNotifications', userNotifications);
-app.use('/api/v1/userSettings', userSettings);
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/user-profile', userProfileRoutes);
+app.use('/api/v1/user-notifications', userNotifications);
+app.use('/api/v1/user-settings', userSettings);
 app.use('/auth', GoogleAuth);
 app.use('/api/v1/document', documentRoutes);
 
