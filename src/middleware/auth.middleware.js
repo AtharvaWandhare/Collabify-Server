@@ -5,7 +5,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const verifyJWT = asyncHandler(async (req, _, next) => {
     try {
-        const token = req.cookies?.AuthToken || req.headers('AuthToken')?.replace('Bearer ', '');
+        // console.log('Req', req);
+        const token = req.body?.headers?.Authorization?.replace('Bearer ', '') || req.authorization?.replace('Bearer ', '') || req.headers?.authorization?.replace('Bearer ', '') || req.cookies?.AuthToken || req.cookies?.access_token || req.headers?.['x-access-token'] || req.headers?.['authorization'] || req.headers?.['Authorization'];
         if (!token) {
             throw new ApiError(401, 'Unauthorized Access');
         }

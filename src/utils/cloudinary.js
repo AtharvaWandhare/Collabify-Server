@@ -11,8 +11,8 @@ function configCloudinary() {
 
 setTimeout(() => {
     configCloudinary();
-    console.log('Cloudinary configured successfully');
-    // console.log('CLOUDINARY_CLOUD_API:', process.env.CLOUDINARY_API_KEY);
+    // console.log('Cloudinary configured successfully');
+    console.log('CLOUDINARY_CLOUD_API:', process.env.CLOUDINARY_API_KEY);
 }, 0);
 
 const uploadOnCloudinary = async (localFilePath) => {
