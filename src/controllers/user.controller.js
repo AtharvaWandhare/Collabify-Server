@@ -106,14 +106,12 @@ const userController = {
         const response = res
             .status(200)
             .cookie('AuthToken', AuthToken, options)
-            .cookie('RefreshToken', RefreshToken, options)
             .json(
                 new ApiResponse(
                     200,
                     {
                         user: LoggedInUser,
-                        AuthToken,
-                        RefreshToken
+                        AuthToken
                     },
                     "User logged in successfully"
                 )
@@ -129,6 +127,10 @@ const userController = {
     // Logout user
     logout: asyncHandler(async (req, res) => {
         const user = await User.findById(req.user._id);
+        if (!user) {
+            res.status(404).json(new ApiResponse(404, {}, "User not found!!!"));
+            return;
+        }
         await User.findByIdAndUpdate(
             req.user._id,
             {
@@ -145,7 +147,6 @@ const userController = {
         const response = res
             .status(200)
             .clearCookie('AuthToken', options)
-            .clearCookie('RefreshToken', options)
             .json(new ApiResponse(200, {}, "User logged out successfully"));
 
         user.StatusUpdate(false);
