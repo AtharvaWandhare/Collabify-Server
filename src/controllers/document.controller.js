@@ -6,7 +6,14 @@ import { UserProfile } from "../models/userProfile.model.js";
 import userNotifications from "../models/userNotifications.model.js";
 import userSettings from "../models/userSettings.model.js";
 import Document from "../models/document.model.js";
+import HtmlToDocx from 'html-to-docx';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const documentController = {
     getAllDocuments: asyncHandler(async (req, res) => {
@@ -78,7 +85,52 @@ const documentController = {
 
     searchDocuments: asyncHandler(async (req, res) => {
 
-    })
+    }),
+
+    downloadDocumentAsDOCX: asyncHandler(async (req, res) => {
+        try {
+            const { id } = req.params;
+            const userId = req.user._id;
+            const username = req.user.username;
+
+            const document = await Document.findOne({ _id: id, user: userId });
+            if (!document) {
+                return res.status(404).json(new ApiError(404, 'Document not found!'));
+            }
+
+            const Delta = JSON.parse(document.content);
+            const QuillDeltaToHtmlConverter = (await import('quill-delta-to-html')).QuillDeltaToHtmlConverter;
+            const converter = new QuillDeltaToHtmlConverter(Delta.ops, {});
+            const htmlContent = converter.convert();
+
+            const documentOptions = {
+                orientation: 'portrait',
+                margins: {
+                    top: 1440, // 1 inch = 1440 twips
+                    right: 1440,
+                    bottom: 1440,
+                    left: 1440
+                },
+                pageSize: 'A4',
+                title: document.title,
+                creator: username,
+                font: 'Times New Roman',
+            }
+
+            const buffer = await HtmlToDocx(htmlContent, null, documentOptions, null);
+
+            // Set response headers
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+            res.setHeader('Content-Disposition', `attachment; filename="${document.title}.docx"`);
+
+            // Send the buffer directly
+            return res.send(buffer);
+
+        } catch (error) {
+            console.error('Error generating DOCX:', error);
+            return res.status(500).json(new ApiError(500, 'Failed to generate document!'));
+        }
+    }),
 }
 
 export default documentController;

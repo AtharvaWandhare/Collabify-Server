@@ -14,6 +14,9 @@ router.route('/:id')
     .put(verifyJWT, documentController.updateDocument)
     .delete(verifyJWT, documentController.deleteDocument);
 
+router.route('/:id/download')
+    .get(verifyJWT, documentController.downloadDocumentAsDOCX);
+
 router.route('/search')
     .get(verifyJWT, documentController.searchDocuments);
 
