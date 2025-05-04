@@ -105,16 +105,10 @@ const documentController = {
 
             const documentOptions = {
                 orientation: 'portrait',
-                margins: {
-                    top: 1440, // 1 inch = 1440 twips
-                    right: 1440,
-                    bottom: 1440,
-                    left: 1440
-                },
                 pageSize: 'A4',
                 title: document.title,
                 creator: username,
-                font: 'Times New Roman',
+                font: 'Georgia',
             }
 
             const buffer = await HtmlToDocx(htmlContent, null, documentOptions, null);
