@@ -40,10 +40,22 @@ const userController = {
     // Register a new user
     register: asyncHandler(async (req, res) => {
         const { username, email, password } = req.body;
-        // console.log(`username: ${username}\nemail: ${email}\npassword: ${password}`);
+        console.log(`username: ${username}\nemail: ${email}\npassword: ${password}`);
 
-        if ([username, email, password].includes('')) {
-            throw new ApiError(400, "All fields are required");
+        if (!email && !password) {
+            throw new ApiError(400, "Email and Password are required");
+        }
+
+        if (!username || username.trim() === '') {
+            throw new ApiError(402, "Username is required");
+        }
+
+        if (!email || email.trim() === '') {
+            throw new ApiError(402, "Email is required");
+        }
+
+        if (!password || password.trim() === '') {
+            throw new ApiError(403, "Password is required");
         }
 
         // Check if user already exists
@@ -67,7 +79,7 @@ const userController = {
         await userSettings.create({ user: createdUser });
 
         // Send response
-        const response = res.status(200).json(new ApiResponse(200, createdUser, "User created successfully"));
+        const response = res.status(201).json(new ApiResponse(201, createdUser, "User created successfully"));
         console.log('User Registered successfully!!');
         return response;
     }),
@@ -77,14 +89,18 @@ const userController = {
         const { email, username, password } = req.body;
         // console.log(`email: ${email}\nusername: ${username}\npassword: ${password}`);
 
-        if ([email, username, password].includes('')) {
-            throw new ApiError(400, "All fields are required");
+        if ([email, username].every((field => field === undefined || field.trim() === ''))) {
+            throw new ApiError(401, "Username or Email is required");
+        }
+
+        if (!password || password.trim() === '') {
+            throw new ApiError(402, "Password is required");
         }
 
         // Check if user exists
         const user = await User.findOne({ $or: [{ email }, { username }] });
         if (!user) {
-            throw new ApiError(400, "No User exists with this email or username!!!");
+            throw new ApiError(404, "No User exists with this email or username!!!");
         }
 
         // Check if password is correct
