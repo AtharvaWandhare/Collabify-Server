@@ -20,4 +20,9 @@ router.route('/:id/download')
 router.route('/search')
     .get(verifyJWT, documentController.searchDocuments);
 
+router.route('/:id/collaborators')
+    .get(verifyJWT, documentController.getDocumentCollaborators)
+    .post(verifyJWT, documentController.addDocumentCollaborator)
+    .delete(verifyJWT, documentController.removeDocumentCollaborator);
+
 export default router;

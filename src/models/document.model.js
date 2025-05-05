@@ -25,11 +25,26 @@ const documentSchema = new Schema({
                 ref: 'User',
                 required: true,
             },
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            username: {
+                type: String,
+                trim: true,
+                default: '',
+            },
             permission: {
                 type: String,
                 enum: ['read', 'write'],
                 default: 'read',
             },
+            status: {
+                type: String,
+                enum: ['pending', 'accepted', 'declined'],
+                default: 'pending',
+            }
         },
     ],
     version: {
