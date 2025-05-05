@@ -125,6 +125,63 @@ const documentController = {
             return res.status(500).json(new ApiError(500, 'Failed to generate document!'));
         }
     }),
+
+    getDocumentCollaborators: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        const document = Document.findOne({ _id: id, user: userId });
+        if (!document) {
+            return res.status(401).json(new ApiError(401, 'There was an error fetching the document! Please try again!'));
+        }
+
+        const collaborators = await User.find({ _id: { $in: document.collaborators } });
+        if (!collaborators) {
+            return res.status(402).json(new ApiError(402, 'There was an error fetching the collaborators! Please try again!'));
+        }
+        console.log('Collaborators fetched:', collaborators);
+
+        return res.status(200).json(new ApiResponse(200, collaborators, 'Collaborators fetched successfully!'));
+    }),
+
+    addDocumentCollaborator: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const userId = req.user._id;
+        const { emails } = req.body;
+
+        const document = await Document.findOne({ _id: id, user: userId });
+        if (!document) {
+            return res.status(401).json(new ApiError(401, 'There was an error fetching the document! Please try again!'));
+        }
+
+        const collaborators = await User.find({ email: { $in: emails } }).select('_id email username');
+        if (!collaborators) {
+            return res.status(402).json(new ApiError(402, 'There was an error fetching the collaborators! Please try again!'));
+        }
+
+        console.log('\nCollaborators fetched:', collaborators);
+        console.log('\nCollaborators to be added:', document.collaborators);
+        document.collaborators = [
+            ...document.collaborators,
+            ...collaborators.map((collaborator) => ({
+                user: collaborator._id,
+                email: collaborator.email,
+                username: collaborator.username || '',
+            }))
+        ];
+        console.log('\nCollaborators to be added:', document.collaborators);
+        document.collaborators = [...new Set(document.collaborators)];
+        await document.save();
+        console.log('\nCollaborators added:', document.collaborators);
+
+        const updatedCollaborators = await User.find({ _id: { $in: document.collaborators } });
+        console.log('Collaborators updates successfully:');
+        return res.status(200).json(new ApiResponse(200, updatedCollaborators, 'Collaborators added successfully!'));
+    }),
+
+    removeDocumentCollaborator: asyncHandler(async (req, res) => {
+
+    }),
 }
 
 export default documentController;
